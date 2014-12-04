@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Implements hook_form_alter().
@@ -23,3 +24,26 @@ function recaptcha_theme($existing, $type, $theme, $path) {
     'recaptcha' => ['variables' => ['site_key' => NULL]],
   ];
 }
+
+/**
+ *  Implements hook_help().
+ */
+function recaptcha_help($route_name, \Drupal\Core\Routing\RouteMatchInterface $route_match) {
+  $output = '';
+  switch ($route_name) {
+    case 'help.page.recaptcha':
+      $output .= "<p>" . t("The ReCAPTCHA module helps prevent spam on your site by using ");
+      $output .= t("the <a href=\"!recaptcha\">Google ReCaptcha Service</a>.</p>", ['!recaptcha' => 'https://www.google.com/recaptcha/intro/']);
+      $output .= t("You must sign up for an account in order to use this service ");
+      $output .= t("and configure your site and secret keys on the ");
+      $output .= Drupal::l("ReCAPTCHA settings page", Url::fromRoute('recaptcha.admin_settings'));
+      break;
+
+    case 'recaptcha.admin_settings':
+      $output .= t("Enter you site and secret keys provided at the ");
+      $output .= t("<a href=\"!admin\">ReCAPTCHA site administration page</a>.", ['!admin' => 'https://www.google.com/recaptcha/admin']);
+      break;
+  }
+  return $output;
+}
+
