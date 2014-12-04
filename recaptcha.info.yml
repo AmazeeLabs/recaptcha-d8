@@ -1,0 +1,5 @@
+name : 'Recaptcha'
+description : 'Protects forms from spam using the Google ReCAPTCHA service'
+core: 8.x
+type: module
+
