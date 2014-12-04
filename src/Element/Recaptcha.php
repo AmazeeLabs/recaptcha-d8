@@ -32,14 +32,6 @@ class Recaptcha extends RenderElement {
   }
 
   /**
-   * {@inheritdoc}
-   */
-  public static function valueCallback(&$element, $input, FormStateInterface $form_state) {
-    // See https://developers.google.com/recaptcha/docs/verify.
-    return $form_state->get('g-recaptcha-response');
-  }
-
-  /**
    * Prepares a #type 'recaptcha' render element for theme_input().
    *
    * @param array $element
@@ -67,9 +59,12 @@ class Recaptcha extends RenderElement {
    *   The current state of the form.
    */
   public static function validateRecaptcha(&$element, FormStateInterface $form_state) {
-    $value = $element['#value'];
 
-    $result = static::recaptcha()->verify($value);
+    // See https://developers.google.com/recaptcha/docs/verify.
+    $user_input = $form_state->getUserInput();
+    $recaptcha_response = $user_input['g-recaptcha-response'];
+
+    $result = static::recaptcha()->verify($recaptcha_response);
     if (!$result['success']) {
       $form_state->setError($element, 'The recaptcha was incorrect.');
       $error_codes = $result['error_codes'];
