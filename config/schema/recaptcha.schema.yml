@@ -10,3 +10,8 @@ recaptcha.settings:
     secret_key:
       type: string
       label: 'Secret Key'
+    form_ids:
+      type: sequence
+      sequence:
+        - type: string
+          label: 'Form ID'

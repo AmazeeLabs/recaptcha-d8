@@ -1,3 +1,4 @@
 administer recaptcha:
   title: 'Administer ReCAPTCHA settings'
-
+skip recaptcha:
+  title: 'Skip ReCAPTCHA verification'

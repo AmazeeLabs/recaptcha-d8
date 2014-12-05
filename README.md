@@ -10,8 +10,8 @@ service.
 
 # TODO
 
-* Make forms configurable
-* Skip recaptcha permission
+* ~~Make forms configurable~~
+* ~~Skip recaptcha permission~~
 * Tests!
 
 
