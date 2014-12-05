@@ -6,6 +6,7 @@
  */
 
 namespace Drupal\recaptcha\Form;
+
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -30,12 +31,14 @@ class SettingsForm extends ConfigFormBase {
     $form['form_ids'] = array(
       '#type' => 'textarea',
       '#title' => $this->t('Form IDs'),
-      '#description' => $this->t('The list of form IDs to add a ReCAPTCHA. e.g. comment_comment_form. Add one form ID per line.'),
+      '#description' => $this->t('The list of form IDs to add a ReCAPTCHA. Add one form ID per line. <br />Examples: <ul><li>comment_comment_form</li><li>user_register_form</li><li>user_pass</li></ul>'),
       '#default_value' => $form_ids,
     );
     $form['api_keys'] = array(
-      '#type' => 'fieldset',
+      '#type' => 'details',
       '#title' => $this->t('API Keys'),
+      '#description' => $this->t("Enter your site and secret keys provided at the <a href=\"!admin\">ReCAPTCHA site administration page</a>",
+        ['!admin' => 'https://www.google.com/recaptcha/admin']),
     );
     $form['api_keys']['site_key'] = array(
       '#type' => 'textfield',
@@ -61,7 +64,9 @@ class SettingsForm extends ConfigFormBase {
     $config = $this->config('recaptcha.settings');
     $config->set('site_key', $form_state->getValue('site_key'));
     $config->set('secret_key', $form_state->getValue('secret_key'));
-    $form_ids = array_map('trim', explode("\n", $form_state->getValue('form_ids')));
+    $form_ids = array_filter(array_map(function ($form_id) {
+      return (strtolower(trim($form_id)));
+    }, explode("\n", $form_state->getValue('form_ids'))));
     $config->set('form_ids', $form_ids);
     $config->save();
     parent::submitForm($form, $form_state);

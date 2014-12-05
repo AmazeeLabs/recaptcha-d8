@@ -16,6 +16,7 @@ function recaptcha_form_alter(&$form, FormStateInterface $form_state, $form_id) 
         '#type' => 'recaptcha',
         '#weight' => 100,
       ];
+      $form['actions']['#weight'] = $form['recaptcha']['#weight'] + 1;
     }
   }
 }
@@ -44,8 +45,9 @@ function recaptcha_help($route_name, \Drupal\Core\Routing\RouteMatchInterface $r
       break;
 
     case 'recaptcha.admin_settings':
-      $output .= t("Enter you site and secret keys provided at the ");
-      $output .= t("<a href=\"!admin\">ReCAPTCHA site administration page</a>.", ['!admin' => 'https://www.google.com/recaptcha/admin']);
+      $output .= t("<p>Specify the form IDs to add a ReCAPTCHA widget. Form IDs ");
+      $output .= t("can be found by viewing the source of a form and looking ");
+      $output .= t("for the hidden input with the name \"form_id\".</p>");
       break;
   }
   return $output;
