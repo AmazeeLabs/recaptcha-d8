@@ -37,19 +37,14 @@ function recaptcha_help($route_name, \Drupal\Core\Routing\RouteMatchInterface $r
   $output = '';
   switch ($route_name) {
     case 'help.page.recaptcha':
-      $output .= "<p>" . t("The ReCAPTCHA module helps prevent spam on your site by using ");
-      $output .= t("the <a href=\"!recaptcha\">Google ReCaptcha Service</a>.</p>", ['!recaptcha' => 'https://www.google.com/recaptcha/intro/']);
-      $output .= t("You must sign up for an account in order to use this service ");
-      $output .= t("and configure your site and secret keys on the ");
-      $output .= Drupal::l("ReCAPTCHA settings page", Url::fromRoute('recaptcha.admin_settings'));
+      $output .= "<p>" . t("The ReCAPTCHA module helps prevent spam on your site by using the <a href=\"!recaptcha\">Google ReCaptcha Service</a>.", ['!recaptcha' => 'https://www.google.com/recaptcha/intro/']);
+      $output .= "<p>" . t("You must sign up for an account in order to use this service and configure your site and secret keys on the !settings page.", ['!settings' => Drupal::l("ReCAPTCHA settings page", Url::fromRoute('recaptcha.admin_settings'))]);
       break;
 
     case 'recaptcha.admin_settings':
-      $output .= t("<p>Specify the form IDs to add a ReCAPTCHA widget. Form IDs ");
-      $output .= t("can be found by viewing the source of a form and looking ");
-      $output .= t("for the hidden input with the name \"form_id\".</p>");
+      $output .= "<p>" . t("Specify the form IDs to add a ReCAPTCHA widget.");
+      $output .= "<p>" . t("Form IDs can be found by viewing the source of a form and looking for the hidden input with the name \"form_id\".");
       break;
   }
   return $output;
 }
-
