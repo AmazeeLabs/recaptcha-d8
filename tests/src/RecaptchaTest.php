@@ -6,13 +6,9 @@
 
 namespace Drupal\Tests\recaptcha;
 
-use Drupal\Core\Config\Config;
-use Drupal\Core\Config\ConfigFactory;
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Http\Client;
 use Drupal\recaptcha\Recaptcha;
 use Drupal\Tests\UnitTestCase;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\Mock;
