@@ -70,18 +70,24 @@ class Recaptcha implements RecaptchaInterface {
    */
   public function verify($response) {
     try {
+      $secret = $this->config->get('secret_key');
+      $client_ip = $this->requestStack->getCurrentRequest()->getClientIp();
       $response = $this->client->get("https://www.google.com/recaptcha/api/siteverify",
         [
           'query' => [
-            'secret' => $this->config->get('secret_key'),
+            'secret' => $secret,
             'response' => $response,
-            'remoteip' => $this->requestStack->getCurrentRequest()->getClientIp(),
+            'remoteip' => $client_ip,
           ]
         ]);
       return $response->json();
     }
     catch (RequestException $e) {
       $this->logger->error('Error requesting recaptcha verification', ['exception' => $e]);
+      return [
+        'success' => FALSE,
+        'error-codes' => ['request-exception' => $e->getMessage()]
+      ];
     }
   }
 
