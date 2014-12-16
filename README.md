@@ -1,4 +1,4 @@
-# ReCAPTCHA
+# ReCAPTCHA [![Build Status](https://travis-ci.org/previousnext/recaptcha.svg?branch=8.x-1.x)](https://travis-ci.org/previousnext/recaptcha)
 
 This is a Drupal 8 module which provides integration with Google ReCAPTCHA
 service.
