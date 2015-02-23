@@ -25,6 +25,13 @@ class SettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
+  protected function getEditableConfigNames() {
+    return ['recaptcha.settings'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('recaptcha.settings');
     $form_ids = implode("\n", $config->get('form_ids'));
