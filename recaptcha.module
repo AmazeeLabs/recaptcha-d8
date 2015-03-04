@@ -1,12 +1,11 @@
 <?php
 
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 /**
  * Implements hook_form_alter().
  */
-function recaptcha_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+function recaptcha_form_alter(&$form, &$form_state, $form_id) {
   $user = \Drupal::currentUser();
   if (!$user->hasPermission('skip recaptcha')) {
     $config = \Drupal::config('recaptcha.settings');
@@ -31,20 +30,22 @@ function recaptcha_theme($existing, $type, $theme, $path) {
 }
 
 /**
- * Implements hook_help().
+ * Theme function for the ["#type" => "recaptcha"] elements.
  */
-function recaptcha_help($route_name, \Drupal\Core\Routing\RouteMatchInterface $route_match) {
-  $output = '';
-  switch ($route_name) {
-    case 'help.page.recaptcha':
-      $output .= "<p>" . t("The ReCAPTCHA module helps prevent spam on your site by using the <a href=\"!recaptcha\">Google ReCaptcha Service</a>.", ['!recaptcha' => 'https://www.google.com/recaptcha/intro/']);
-      $output .= "<p>" . t("You must sign up for an account in order to use this service and configure your site and secret keys on the !settings page.", ['!settings' => Drupal::l("ReCAPTCHA settings page", Url::fromRoute('recaptcha.admin_settings'))]);
-      break;
+function theme_recaptcha($vars) {
+  return '<div class="g-recaptcha" data-sitekey="' . $vars['site_key'] . '"></div>';
+}
 
-    case 'recaptcha.admin_settings':
-      $output .= "<p>" . t("Specify the form IDs to add a ReCAPTCHA widget.");
-      $output .= "<p>" . t("Form IDs can be found by viewing the source of a form and looking for the hidden input with the name \"form_id\".");
-      break;
-  }
-  return $output;
+/**
+ * Implements hook_element_info().
+ */
+function recaptcha_element_info() {
+  return [
+    'recaptcha' => [
+      '#input' => FALSE,
+      '#pre_render' => [['Drupal\recaptcha\Element\Recaptcha', 'preRenderRecaptcha']],
+      '#element_validate' => [['Drupal\recaptcha\Element\Recaptcha', 'validateRecaptcha']],
+      '#theme' => 'recaptcha',
+    ],
+  ];
 }

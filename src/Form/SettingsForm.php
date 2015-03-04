@@ -8,7 +8,6 @@
 namespace Drupal\recaptcha\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
-use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Administration form for ReCAPTCHA settings.
@@ -32,7 +31,7 @@ class SettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, array &$form_state) {
     $config = $this->config('recaptcha.settings');
     $form_ids = implode("\n", $config->get('form_ids'));
     $form['form_ids'] = array(
@@ -67,13 +66,13 @@ class SettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, array &$form_state) {
     $config = $this->config('recaptcha.settings');
-    $config->set('site_key', $form_state->getValue('site_key'));
-    $config->set('secret_key', $form_state->getValue('secret_key'));
+    $config->set('site_key', $form_state['values']['site_key']);
+    $config->set('secret_key', $form_state['values']['secret_key']);
     $form_ids = array_filter(array_map(function ($form_id) {
       return (strtolower(trim($form_id)));
-    }, explode("\n", $form_state->getValue('form_ids'))));
+    }, explode("\n", $form_state['values']['form_ids'])));
     $config->set('form_ids', $form_ids);
     $config->save();
     parent::submitForm($form, $form_state);

@@ -7,16 +7,10 @@
 
 namespace Drupal\recaptcha\Element;
 
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element\FormElement;
-use Drupal\Core\Render\Element\RenderElement;
-
 /**
  * Provides a recaptcha form element.
- *
- * @RenderElement("recaptcha")
  */
-class Recaptcha extends RenderElement {
+class Recaptcha {
 
   /**
    * {@inheritdoc}
@@ -55,33 +49,30 @@ class Recaptcha extends RenderElement {
    * @param array $element
    *   An associative array containing the properties and children of the
    *   generic input element.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   * @param array $form_state
    *   The current state of the form.
    */
-  public static function validateRecaptcha(&$element, FormStateInterface $form_state) {
+  public static function validateRecaptcha(&$element, &$form_state) {
 
     // See https://developers.google.com/recaptcha/docs/verify.
-    $user_input = $form_state->getUserInput();
+    $user_input = $form_state['input'];
     $recaptcha_response = $user_input['g-recaptcha-response'];
 
     $result = static::recaptcha()->verify($recaptcha_response);
     if (!$result['success']) {
-      $form_state->setError($element, 'The recaptcha was incorrect.');
+      \Drupal::formBuilder()->setError($element, $form_state, t('The recaptcha was incorrect.'));
       $error_codes = $result['error_codes'];
       if (in_array('missing-input-secret', $error_codes)) {
-        static::logger()->error('The secret parameter is missing.');
+        watchdog('recaptcha', 'The secret parameter is missing.');
       }
       if (in_array('invalid-input-secret', $error_codes)) {
-        static::logger()
-          ->error('The secret parameter is invalid or malformed.');
+        watchdog('recaptcha', 'The secret parameter is invalid or malformed.');
       }
       if (in_array('missing-input-response', $error_codes)) {
-        static::logger()
-          ->error('The response parameter is missing.');
+        watchdog('recaptcha', 'The response parameter is missing.');
       }
       if (in_array('invalid-input-response', $error_codes)) {
-        static::logger()
-          ->error('The response parameter is invalid or malformed.');
+        watchdog('recaptcha', 'The response parameter is invalid or malformed.');
       }
     }
   }
@@ -104,16 +95,6 @@ class Recaptcha extends RenderElement {
    */
   protected static function recaptcha() {
     return \Drupal::service('recaptcha');
-  }
-
-  /**
-   * Gets the logger service.
-   *
-   * @return \Psr\Log\LoggerInterface
-   *   The logger channel
-   */
-  protected static function logger() {
-    return \Drupal::service('logger.channel.recaptcha');
   }
 
 }

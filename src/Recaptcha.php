@@ -10,7 +10,6 @@ namespace Drupal\recaptcha;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -40,13 +39,6 @@ class Recaptcha implements RecaptchaInterface {
   protected $requestStack;
 
   /**
-   * The logger.
-   *
-   * @var \Psr\Log\LoggerInterface
-   */
-  protected $logger;
-
-  /**
    * Creates a new Recaptcha instance.
    *
    * @param \GuzzleHttp\ClientInterface $client
@@ -55,14 +47,11 @@ class Recaptcha implements RecaptchaInterface {
    *   The request stack.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
-   * @param \Psr\Log\LoggerInterface $logger
-   *   The logger.
    */
-  public function __construct(ClientInterface $client, RequestStack $request_stack, ConfigFactoryInterface $config_factory, LoggerInterface $logger) {
+  public function __construct(ClientInterface $client, RequestStack $request_stack, ConfigFactoryInterface $config_factory) {
     $this->client = $client;
     $this->requestStack = $request_stack;
     $this->config = $config_factory->get('recaptcha.settings');
-    $this->logger = $logger;
   }
 
   /**
@@ -83,7 +72,7 @@ class Recaptcha implements RecaptchaInterface {
       return $response->json();
     }
     catch (RequestException $e) {
-      $this->logger->error('Error requesting recaptcha verification', ['exception' => $e]);
+      watchdog_exception('recaptcha', $e, "Error requesting recaptcha verification \n\n<br /><br /> %type: !message in %function (line %line of %file).");
       return [
         'success' => FALSE,
         'error-codes' => ['request-exception' => $e->getMessage()]

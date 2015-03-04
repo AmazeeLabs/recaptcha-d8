@@ -1,7 +1,4 @@
 services:
   recaptcha:
     class: Drupal\recaptcha\Recaptcha
-    arguments: ['@http_client', '@request_stack', '@config.factory', '@logger.channel.recaptcha']
-  logger.channel.recaptcha:
-    parent: logger.channel_base
-    arguments: ['recaptcha']
+    arguments: ['@http_client', '@request_stack', '@config.factory']
